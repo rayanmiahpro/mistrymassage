@@ -29,6 +29,8 @@ export async function POST(req: Request) {
     });
     let varifyCode = Math.floor(100000 + Math.random() * 900000).toString();
 
+    //console.log(varifyCode);
+
     if (existingUserByEmail) {
       if (existingUserByEmail.isVarified) {
         return Response.json(
@@ -40,6 +42,7 @@ export async function POST(req: Request) {
         );
       } else {
         const hashedPassword = await bcrypt.hash(password, 10);
+        existingUserByEmail.username = username
         existingUserByEmail.password = hashedPassword;
         existingUserByEmail.varifyCode = varifyCode;
         existingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 3600000);
@@ -50,13 +53,15 @@ export async function POST(req: Request) {
       const expiryDate = new Date();
       expiryDate.setHours(expiryDate.getHours() + 1);
 
+      // console.log(expiryDate);
+
       const newUser = new User({
         username,
         email,
         password: hashedPassword,
         isVarified: false,
         varifyCode,
-        varifyCodeExpiry: expiryDate,
+        verifyCodeExpiry: expiryDate,
         isMassageAllowed: true,
         massages: [],
       });

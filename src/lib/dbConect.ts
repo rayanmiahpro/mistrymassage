@@ -14,15 +14,16 @@ export const dbConect = async () => {
   }
 
   try {
-    const db = await mongoose.connect(process.env.MONGODB_URI || "");
+    const db = await mongoose.connect(
+      `${process.env.MONGODB_URI}/mistrymassage` || ""
+    );
 
     conection.isConnected = db.connections[0].readyState;
 
     console.log("mongodb connected successfully");
   } catch (error) {
     console.error("mongodb connection error", error);
-    
-    process.exit(1);
 
+    process.exit(1);
   }
 };
